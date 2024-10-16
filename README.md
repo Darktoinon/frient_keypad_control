@@ -27,18 +27,22 @@ Ce projet propose un blueprint d'automatisation pour Home Assistant, permettant 
 ## Installation
 
 ### EN:
-1. Download and import the blueprint into your Home Assistant instance.
+1. Download and import the blueprint into your Home Assistant instance by clicking the button below.
 2. Configure the Frient Keypad device with ZHA or Zigbee integration.
 3. Link the blueprint with your alarm panel (Alarmo or any compatible panel).
 4. Define valid PIN codes and RFID tags in the blueprint.
 5. Enjoy automatic syncing and control of your alarm system with the Frient Keypad.
 
+[![Import Blueprint](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https://raw.githubusercontent.com/Darktoinon/frient_keypad_control/refs/heads/main/frient_keypad_control.yaml)
+
 ### FR :
-1. Téléchargez et importez le blueprint dans votre instance Home Assistant.
+1. Téléchargez et importez le blueprint dans votre instance Home Assistant en cliquant sur le bouton ci-dessous.
 2. Configurez le dispositif Keypad Frient avec l'intégration ZHA ou Zigbee.
 3. Liez le blueprint avec votre panneau d'alarme (Alarmo ou tout autre panneau compatible).
 4. Définissez les codes PIN valides et les badges RFID dans le blueprint.
 5. Profitez de la synchronisation automatique et du contrôle de votre système d'alarme avec le Keypad Frient.
+
+[![Importer Blueprint](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https://raw.githubusercontent.com/Darktoinon/frient_keypad_control/refs/heads/main/frient_keypad_control.yaml)
 
 ## Usage / Utilisation
 
@@ -58,4 +62,12 @@ Ce projet propose un blueprint d'automatisation pour Home Assistant, permettant 
 Contributions are welcome! Feel free to open issues or submit pull requests to improve functionality or add more language support.
 
 ### FR :
-Les contributions sont les bienvenues ! N'hésitez pas à ouvrir des issues ou à soumettre des pull requests pour améliorer la fonctionnalité ou 
+Les contributions sont les bienvenues ! N'hésitez pas à ouvrir des issues ou à soumettre des pull requests pour améliorer la fonctionnalité ou ajouter d'autres langues.
+
+## License / Licence
+
+GNU V3 License
+
+## GitHub Repository
+
+[GitHub - Darktoinon](https://github.com/Darktoinon/)

@@ -61,14 +61,6 @@ blueprint:
       default: ""
       selector:
         text: {}
-    use_pin_for_arm:
-      name: Use PIN Code for Arming / Utiliser le code PIN pour armer
-      description: |
-        Check this box if you want to arm the alarm with a PIN. If so, it's recommended to enable this option in the Frient Keypad configuration in ZHA.
-        Cochez cette case si vous souhaitez armer l'alarme avec un code. Si tel est le cas, il est préférable d'activer cette option sur le boîtier Frient dans la configuration de ZHA.
-      default: false
-      selector:
-        boolean: {}
     mirror_default_pin:
       name: Default PIN Code for Mirrored Alarm / Code PIN par défaut pour la centrale synchronisée
       description: |
@@ -92,7 +84,6 @@ variables:
   pin_list: "{{ pin_list_var.split(';') }}"
   rfid_list_var: !input rfid_list
   rfid_list: "{{ rfid_list_var.split(';') }}"
-  use_pin_for_arm: !input use_pin_for_arm
   mirror_default_pin: !input mirror_default_pin
 
 # Translation for English and French messages

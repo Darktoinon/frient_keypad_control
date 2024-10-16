@@ -1,4 +1,4 @@
-# Keypad Frient (KEPZB-110) for Alarmo (FR/EN)
+# Keypad Frient (KEPZB-110) for Alarmo or others (FR/EN)
 
 ## Description
 

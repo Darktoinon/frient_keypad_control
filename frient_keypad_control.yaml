@@ -3,6 +3,8 @@ blueprint:
   description: |
     Manage multiple PIN codes to arm and disarm an alarm using the Frient Keypad, synchronizing the state with an Alarmo central or other systems. (English/French)
     Gère plusieurs codes PIN pour armer et désarmer une alarme en utilisant le Keypad Frient, tout en synchronisant l'état avec une centrale Alarmo ou autre.
+    You will need to create the same PIN codes in Alarmo, which also supports RFID badges.
+    Il faudra créer les mêmes code pin dans Alarmo qui supporte aussi les badge RFID.
   domain: automation
   input:
     language:
@@ -54,7 +56,7 @@ blueprint:
       selector:
         text: {}
     default_pin:
-      name: Default PIN Code for Disarming / Code PIN par défaut pour désarmer
+      name: Default PIN Code for Disarming Frient Keypad / Code PIN par défaut pour désarmer le Frient Keypad
       description: |
         The default PIN code to use for disarming the alarm.
         Le code PIN par défaut à utiliser pour désarmer l'alarme.

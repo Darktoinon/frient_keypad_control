@@ -98,7 +98,7 @@ variables:
 # Translation for English and French messages
   text_arm_home: "{{ 'Arm Home' if language == 'EN' else 'Armer à la maison' }}"
   text_arm_night: "{{ 'Arm Night' if language == 'EN' else 'Armer la nuit' }}"
-  text_arm_away: "{{ 'Arm Away' if language == 'EN' else 'Armer à l\'extérieur' }}"
+  text_arm_away: "{{ 'Arm Away' if language == 'EN' else 'Armer à l''extérieur' }}"
   text_disarm: "{{ 'Disarm' if language == 'EN' else 'Désarmer' }}"
 
 condition: []

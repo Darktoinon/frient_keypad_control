@@ -1,0 +1,164 @@
+blueprint:
+  name: Keypad Frient (KEPZB-110) for Alarmo by Darktoinon (FR/EN)
+  description: |
+    Manage multiple PIN codes to arm and disarm an alarm using the Frient Keypad, synchronizing the state with an Alarmo central or other systems. (English/French)
+    Gère plusieurs codes PIN pour armer et désarmer une alarme en utilisant le Keypad Frient, tout en synchronisant l'état avec une centrale Alarmo ou autre.
+  domain: automation
+  input:
+    language:
+      name: Choose Language / Choisir la langue
+      description: "Select the language for the blueprint / Sélectionnez la langue pour le blueprint."
+      selector:
+        select:
+          options:
+            - "EN"
+            - "FR"
+    keypad:
+      name: Frient Keypad
+      description: |
+        The Frient KEPZB-110 keypad.
+        Le clavier Frient KEPZB-110.
+      selector:
+        device:
+          integration: zha
+    alarm_panel:
+      name: Alarm Panel
+      description: |
+        The Frient alarm panel to control.
+        Le panneau d'alarme Frient à contrôler.
+      selector:
+        entity:
+          domain: alarm_control_panel
+    mirror_alarm_panel:
+      name: Alarm Panel to Mirror (Alarmo or other)
+      description: |
+        The alarm panel to sync with Frient (e.g., Alarmo).
+        Le panneau d'alarme à synchroniser avec Frient (ex: Alarmo).
+      default: alarm_control_panel.alarmo
+      selector:
+        entity:
+          domain: alarm_control_panel
+    pin_list:
+      name: Valid PIN Codes / Codes PIN valides
+      description: |
+        List of valid PIN codes for arming/disarming, separated by semicolons (;).
+        Liste des codes PIN valides pour armer/désarmer, séparés par des points-virgules (;).
+      default: ""
+      selector:
+        text: {}
+    rfid_list:
+      name: RFID List / Liste des badges RFID
+      description: |
+        A list of valid RFID identifiers that can be accepted by your keypad, separated by semicolons (;).
+        Une liste des identifiants RFID valides pouvant être acceptés par votre clavier, séparés par des points-virgules (;).
+      selector:
+        text: {}
+    default_pin:
+      name: Default PIN Code for Disarming / Code PIN par défaut pour désarmer
+      description: |
+        The default PIN code to use for disarming the alarm.
+        Le code PIN par défaut à utiliser pour désarmer l'alarme.
+      default: ""
+      selector:
+        text: {}
+    use_pin_for_arm:
+      name: Use PIN Code for Arming / Utiliser le code PIN pour armer
+      description: |
+        Check this box if you want to arm the alarm with a PIN. If so, it's recommended to enable this option in the Frient Keypad configuration in ZHA.
+        Cochez cette case si vous souhaitez armer l'alarme avec un code. Si tel est le cas, il est préférable d'activer cette option sur le boîtier Frient dans la configuration de ZHA.
+      default: false
+      selector:
+        boolean: {}
+    mirror_default_pin:
+      name: Default PIN Code for Mirrored Alarm / Code PIN par défaut pour la centrale synchronisée
+      description: |
+        The default PIN code to use for syncing arming/disarming on the mirrored alarm panel (e.g., Alarmo).
+        Le code PIN par défaut à utiliser pour synchroniser l'armement/désarmement sur la centrale synchronisée (Alarmo).
+      default: ""
+      selector:
+        text: {}
+
+trigger:
+  - platform: event
+    event_type: zha_event
+    event_data:
+      device_id: !input keypad
+      command: arm
+    id: keypad_event
+
+variables:
+  language: !input language
+  pin_list_var: !input pin_list
+  pin_list: "{{ pin_list_var.split(';') }}"
+  rfid_list_var: !input rfid_list
+  rfid_list: "{{ rfid_list_var.split(';') }}"
+  use_pin_for_arm: !input use_pin_for_arm
+  mirror_default_pin: !input mirror_default_pin
+
+# Translation for English and French messages
+  text_arm_home: "{{ 'Arm Home' if language == 'EN' else 'Armer à la maison' }}"
+  text_arm_night: "{{ 'Arm Night' if language == 'EN' else 'Armer la nuit' }}"
+  text_arm_away: "{{ 'Arm Away' if language == 'EN' else 'Armer à l\'extérieur' }}"
+  text_disarm: "{{ 'Disarm' if language == 'EN' else 'Désarmer' }}"
+
+condition: []
+
+action:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: keypad_event
+          - condition: template
+            value_template: "{{ trigger.event.data.command == 'arm' }}"
+        sequence:
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: "{{ trigger.event.data.args.arm_mode == 0 }}"
+                  - condition: state
+                    entity_id: !input alarm_panel
+                    state: 
+                      - "armed_home"
+                      - "armed_away"
+                      - "armed_night"
+                sequence:
+                  - service: alarm_control_panel.alarm_disarm
+                    target:
+                      entity_id: !input alarm_panel
+                    data:
+                      code: !input default_pin
+                  - service: alarm_control_panel.alarm_disarm
+                    target:
+                      entity_id: !input mirror_alarm_panel
+                    data:
+                      code: "{{ trigger.event.data.args.code if trigger.event.data.args.code != '' else mirror_default_pin }}"
+              - conditions:
+                  - condition: template
+                    value_template: "{{ trigger.event.data.args.arm_mode == 1 }}"
+                sequence:
+                  - service: alarm_control_panel.alarm_arm_home
+                    target:
+                      entity_id: !input mirror_alarm_panel
+                    data:
+                      code: "{{ trigger.event.data.args.code if trigger.event.data.args.code != '' else mirror_default_pin }}"
+              - conditions:
+                  - condition: template
+                    value_template: "{{ trigger.event.data.args.arm_mode == 2 }}"
+                sequence:
+                  - service: alarm_control_panel.alarm_arm_night
+                    target:
+                      entity_id: !input mirror_alarm_panel
+                    data:
+                      code: "{{ trigger.event.data.args.code if trigger.event.data.args.code != '' else mirror_default_pin }}"
+              - conditions:
+                  - condition: template
+                    value_template: "{{ trigger.event.data.args.arm_mode == 3 }}"
+                sequence:
+                  - service: alarm_control_panel.alarm_arm_away
+                    target:
+                      entity_id: !input mirror_alarm_panel
+                    data:
+                      code: "{{ trigger.event.data.args.code if trigger.event.data.args.code != '' else mirror_default_pin }}"
+    default: []
+
+mode: single

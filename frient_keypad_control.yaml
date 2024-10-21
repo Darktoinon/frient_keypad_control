@@ -80,6 +80,11 @@ trigger:
       command: arm
     id: keypad_event
 
+  # Trigger for Alarmo state change
+  - platform: state
+    entity_id: !input mirror_alarm_panel
+    id: alarmo_state_change
+
 variables:
   language: !input language
   pin_list_var: !input pin_list
@@ -114,6 +119,7 @@ action:
                       - "armed_home"
                       - "armed_away"
                       - "armed_night"
+                      - "triggered"
                 sequence:
                   - service: alarm_control_panel.alarm_disarm
                     target:
@@ -152,6 +158,61 @@ action:
                       entity_id: !input mirror_alarm_panel
                     data:
                       code: "{{ trigger.event.data.args.code if trigger.event.data.args.code != '' else mirror_default_pin }}"
+
+      # Synchronize Frient Keypad based on Alarmo state changes
+      - conditions:
+          - condition: trigger
+            id: alarmo_state_change
+        sequence:
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: !input mirror_alarm_panel
+                    state: "disarmed"
+                sequence:
+                  - service: alarm_control_panel.alarm_disarm
+                    target:
+                      entity_id: !input alarm_panel
+                    data:
+                      code: !input default_pin
+              - conditions:
+                  - condition: state
+                    entity_id: !input mirror_alarm_panel
+                    state: "armed_home"
+                sequence:
+                  - service: alarm_control_panel.alarm_arm_home
+                    target:
+                      entity_id: !input alarm_panel
+                    data:
+                      code: !input default_pin
+              - conditions:
+                  - condition: state
+                    entity_id: !input mirror_alarm_panel
+                    state: "armed_night"
+                sequence:
+                  - service: alarm_control_panel.alarm_arm_night
+                    target:
+                      entity_id: !input alarm_panel
+                    data:
+                      code: !input default_pin
+              - conditions:
+                  - condition: state
+                    entity_id: !input mirror_alarm_panel
+                    state: "armed_away"
+                sequence:
+                  - service: alarm_control_panel.alarm_arm_away
+                    target:
+                      entity_id: !input alarm_panel
+                    data:
+                      code: !input default_pin
+              - conditions:
+                  - condition: state
+                    entity_id: !input mirror_alarm_panel
+                    state: "triggered"
+                sequence:
+                  - service: alarm_control_panel.alarm_trigger
+                    target:
+                      entity_id: !input alarm_panel
     default: []
 
 mode: single
